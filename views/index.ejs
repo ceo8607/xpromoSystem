@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/xpromo/stylesheets/style.css' />
+		<link rel='stylesheet' href='/xpromo/stylesheets/bootstrap.min.css' />
+		<link rel='stylesheet' href='/xpromo/stylesheets/bootstrap-theme.min.css' />
+	</head>
+	<body>
+		<script src="/xpromo/js/RGraph.common.core.js" ></script>
+		<script src="/xpromo/js/RGraph.bar.js" ></script>
+		<script src="/xpromo/js/jquery-1.11.2.min.js" ></script>
+		<script src="/xpromo/js/bootstrap.min.js" ></script>
+	
+		<div class="header" >
+			<p class="hp" > <%= title %> </p>
+		</div>
+			<div class="container" >
+				<div class="container" style="margin-top: 10px">
+					<canvas class="canvas-class" id="cvs" width="300" height="250">
+						[No canvas support]
+					</canvas>
+				</div>
+				<div class="container" style="margin-top: 10px">
+				<table>
+					<tr>
+						<th><td></td></th><th><td>Reg Users</td></th><th><td>All Coupons</td></th>
+					</tr>
+					<tr>
+						<th><td>100円クーポン</td></th><th><td><%= coupon100 %></td></th><th><td><%= coupon100all %></td></th>
+					</tr>
+					<tr>
+						<th><td>900円クーポン</td></th><th><td><%= coupon900 %></td></th><th><td><%= coupon900all %></td></th>
+					</tr>
+				</table>
+				</div>
+				<div class="container" style="margin-top: 20px">
+					<form action="/xpromo/download">
+						<input class="btn btn-default" style="font-weight: bold;" type="submit" value="CSV_Download" >
+					</form>
+				</div>
+			</div>
+			<div class="container-header" >
+				<p class="hp">BlackList</p>
+			</div>
+			<div class="container-left">
+				<table>
+					<tr>
+						<td style="background-color: #ccc; font-weight: bold;">Client IP</td>
+					</tr>
+					<% for(var i=0; i<blacklist.length ;i++) { %>
+					<tr>
+						<td><%= blacklist[i].clientIp %></td>
+					</tr>
+					<% } %>
+				</table>
+			</div>
+			<div class="container-right">
+				<ul class="ul-text">
+					<form action="/xpromo/blackList/reg" method="get" name="reg" >
+						<p style="text-align: center; background-color: #ccc; width: 100%; margin-top: 10px;">BlackList IP登録</p>
+						登録IP <input type="text" name="blacklist"></br>
+						<div class="container" style="margin-top: 5px; margin-bottom: 5px; padding: 0px;" >
+							<input class="btn btn-default" style="font-weight: bold;" type="submit" value="BlackList登録" onclick="checkFormreg()" >
+					</form>
+				</ul>
+				<ul class="ul-text">
+					<form action="/xpromo/blackList/del" method="get" name="del" >
+						<p style="text-align: center; background-color: #ccc; width: 100%; margin-top: 10px;">BlackList IP削除</p>
+						削除IP <input type="text" name="blacklistdel"></br>
+						<div class="container" style="margin-top: 5px; margin-bottom: 5px; padding: 0px;">
+							<input class="btn btn-default" style="font-weight: bold;" type="submit" value="BlackList削除" onclick="checkFormdel()" >
+						</div>
+					</form>
+				</ul>
+			</div>
+		</div>
+		<div class="footer">
+			<p class="footer-text">Nexon.Mobile.Tech</p>
+		<div>
+		
+		<script>
+			window.onload = function(){
+				var data = [ <%= coupon100 %>, <%= coupon900 %> ];
+			
+				var bar = new RGraph.Bar({
+					id: 'cvs',
+					data: data,
+					options: {
+						title: 'Promotion\n',
+						labels: ['100円クーポン', '900円クーポン'],
+						labelsAbove: true,
+						labelsAboveSpecific: [<%= coupon100 %>,<%= coupon900 %>],
+						shadowBlur: 0,
+						shadowOffsetx: 2,
+						shadowOffsety: 2,
+						strokestyle: 'rgba(0,0,0,0)',
+						backgroundGridVlines: false,
+						backgroundGridBorder: false,
+						gutterTop: 40,
+						gutterLeft: 40,
+						noxaxis: true,
+						colors: ['Gradient(#ddd:#999)']
+					}
+				}).grow();
+			};
+			
+			function checkFormreg() {
+				formreg = document.reg;
+				if(!formreg.blacklist.value){
+					formreg.blacklist.focus();
+					return alert("IPを入力してください。");
+				} else {
+					formreg.submit();
+				}
+			}
+			
+			function checkFormdel() {
+				formdel = document.del;
+				if(!formdel.blacklistdel.value){
+					alert("IPを入力してください。");
+					formdel.blacklistdel.focus();
+					return;
+				} else {
+					formdel.submit();
+				}
+			}
+		</script>
+	</body>
+</html>
